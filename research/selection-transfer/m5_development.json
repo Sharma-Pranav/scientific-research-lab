@@ -1,0 +1,43 @@
+{
+  "question_id": "selection-transfer-m5-development-v1",
+  "phase": "exploratory",
+  "dataset": "M5 accuracy sales_train_validation.csv (Zenodo 10203108 mirror)",
+  "n_days": 1913,
+  "per_stratum": 8,
+  "dev_states": [
+    "CA",
+    "TX"
+  ],
+  "sealed_state": "WI",
+  "sealed_test_days": 112,
+  "min_history": 365,
+  "calibration_windows": 12,
+  "selection_windows": 12,
+  "partial_windows": 3,
+  "origins": [
+    1365,
+    1421,
+    1477,
+    1533,
+    1589,
+    1645,
+    1701,
+    1757
+  ],
+  "methods": [
+    "seasonal_naive",
+    "mean28",
+    "mean56",
+    "croston_sba"
+  ],
+  "lead_times": [
+    7,
+    14
+  ],
+  "alphas": [
+    0.5,
+    0.9
+  ],
+  "frozen": false,
+  "limitations": "Observed retail sales are a demand proxy; development-only"
+}

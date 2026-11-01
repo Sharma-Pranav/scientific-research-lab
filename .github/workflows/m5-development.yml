@@ -1,0 +1,50 @@
+name: M5 real-data development baselines
+on:
+  push:
+    branches: ['research/m5-realdata-baselines-v1']
+    paths:
+      - 'research_lab/m5_baselines.py'
+      - 'research/selection-transfer/m5_development.json'
+      - 'tests/test_m5_baselines.py'
+      - '.github/workflows/m5-development.yml'
+  workflow_dispatch:
+jobs:
+  m5-development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: No-data methodology unit tests
+        run: python -m unittest discover -s tests -p 'test_m5_baselines.py' -v
+      - name: Download pinned M5 source and execute development-only baseline
+        run: |
+          python -m research_lab.m5_baselines --config research/selection-transfer/m5_development.json --output research-output/m5-development --download
+      - name: Guardrails and result summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          folder=Path('research-output/m5-development')
+          r=json.loads((folder/'results.json').read_text())
+          m=json.loads((folder/'manifest.json').read_text())
+          assert r['n_skus']==48
+          assert r['n_cases']==48*8*2*2
+          assert r['holdout_states_excluded']==['WI']
+          assert r['boundaries']['latest_dev_label_index']<r['boundaries']['sealed_start_index']
+          assert m['protocol_sha256']==r['protocol_sha256']
+          print('DEVELOPMENT GUARDRAILS PASS')
+          for line in r['summary']:
+              print(json.dumps(line,sort_keys=True))
+          PY
+      - name: Upload derived evidence only (never raw data)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: m5-baseline-evidence
+          path: research-output/m5-development/
+          if-no-files-found: warn
