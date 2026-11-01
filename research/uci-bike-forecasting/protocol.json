@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "project": "uci-bike-forecasting",
+  "phase": "exploratory",
+  "frozen": false,
+  "question": "Do weekly seasonality and recent averages improve next-day bike rental forecasts relative to a last-day naive forecast?",
+  "significance": "Exercise a scientifically distinct input and evaluation type on an authentic curated UCI dataset.",
+  "hypothesis": "At least one seasonal or moving-average baseline improves last-day MAE on the chronological final period.",
+  "falsifier": "Neither lag-7 nor moving-average forecasts beat lag-1 on held-out MAE.",
+  "runner": "experiment.py",
+  "inputs": [
+    {
+      "name": "dataset",
+      "path": "data/curated/day.csv",
+      "sha256": "a6bcf826782d3c0fbfdcbeead17cd0884185a0dafe8ff10cd48a874ee7ba18be"
+    }
+  ],
+  "settings": {
+    "task": "chronological_forecasting",
+    "train_cutoff": 611,
+    "holdout_count": 120,
+    "uci_id": 275
+  },
+  "seeds": [
+    20261101
+  ]
+}

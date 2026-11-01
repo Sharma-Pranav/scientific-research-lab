@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "project": "uci-iris-classification",
+  "phase": "exploratory",
+  "frozen": false,
+  "question": "Does train-only nearest-centroid classification outperform a train-majority baseline on held-out UCI Iris flowers?",
+  "significance": "Exercise a scientifically distinct input and evaluation type on an authentic curated UCI dataset.",
+  "hypothesis": "Train-only centroids outperform majority-class on stable row-hash holdout accuracy and macro-F1.",
+  "falsifier": "Centroid test accuracy does not exceed the train-majority baseline.",
+  "runner": "experiment.py",
+  "inputs": [
+    {
+      "name": "dataset",
+      "path": "data/curated/iris.data",
+      "sha256": "6f608b71a7317216319b4d27b4d9bc84e6abd734eda7872b71a458569e2656c0"
+    }
+  ],
+  "settings": {
+    "task": "multiclass_classification",
+    "test_ratio": 0.25,
+    "selection": "SHA256 row index",
+    "uci_id": 53
+  },
+  "seeds": [
+    20261101
+  ]
+}
