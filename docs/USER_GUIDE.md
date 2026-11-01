@@ -6,6 +6,21 @@
 
 This repository is a **research execution and verification harness**, not a push-button autonomous scientist. Python executes experiments; Git records protocols; Codex helps develop questions, methods, implementations and critical reviews. The human research director must approve the question, source interpretation, experiments and claims.
 
+## Answer "So what?" at two stages
+
+New projects include `research/<slug>/significance.md`. Before committing to
+substantial research, complete **"I am studying ... because I want to find out ...
+in order to help my reader understand ..."** and run:
+`python -m research_lab.study preflight <slug> --stage framing`.
+
+After results, answer five reader questions: **Claim**, **Reasons**, **Evidence**,
+**Acknowledgement & Response**, **Warrant**; run:
+`python -m research_lab.study preflight <slug> --stage argument`.
+Both checks only establish a structurally populated worksheet; primary-source
+verification and independent scientific review remain indispensable.
+
+[Significance and argument guide](SIGNIFICANCE_AND_ARGUMENT.md).
+
 ## For a completely NEW research problem
 
 **The repository now provides a dataset-agnostic project harness.** Use this before copying any M5 research code:

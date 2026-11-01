@@ -2,6 +2,12 @@
 
 ## Start here — research on any problem
 
+**Before experiments, answer "So what?"** Complete \`research/<slug>/significance.md\`:
+**I am studying ... because I want to find out ... in order to help my reader understand ...**
+Then ask the reader's five questions: **Claim, Reasons, Evidence, Acknowledgement & Response, Warrant**.
+The two-phase check is structural and sends completed work to human review, not publication approval.
+[Significance and argument guide](docs/SIGNIFICANCE_AND_ARGUMENT.md).
+
 This is a **dataset-independent research workspace**, not an M5-only forecasting project. Use Codex to help design and challenge a study; use the Python harness to execute and audit it. **Start with a falsifiable question, not with a model or a preferred conclusion.**
 
 1. **Frame the question.** State why it matters, what outcome would falsify the hypothesis, and the strongest competing explanation.
@@ -15,15 +21,19 @@ git clone https://github.com/Sharma-Pranav/scientific-research-lab.git
 cd scientific-research-lab
 python -m unittest discover -s tests -v
 python -m research_lab.study init my-question --title "A falsifiable research question"
+# Fill research/my-question/significance.md, then validate reader significance:
+python -m research_lab.study preflight my-question --stage framing
 # Edit research/my-question/{proposal.md,protocol.json,experiment.py,evidence_matrix.csv}
 # Replace the scaffolded toy runner before interpreting scientific results.
 python -m research_lab.study run my-question
 python -m research_lab.study audit my-question --replay
+# After obtaining and reviewing evidence, complete all five argument parts:
+python -m research_lab.study preflight my-question --stage argument
 ```
 
 **Codex starter prompt:**
 
-> Read `AGENTS.md` and `docs/NEW_RESEARCH_PROJECT.md`. Help investigate **[my research question]** using the five research skills. Check closest prior work and scientific novelty; prefer credible curated datasets with clear provenance, valid reuse rights and appropriate splits; formulate competing falsifiable hypotheses; define strong baselines, uncertainty, and leakage controls; implement a trusted project-specific runner; execute and replay-audit results; conduct an adversarial review. Keep exploratory and confirmatory evidence separate. Report actual tests, sources, limitations, and GO / REVISE / STOP gates. Do not claim novelty or publication readiness without evidence.
+> Read `AGENTS.md` and `docs/NEW_RESEARCH_PROJECT.md`. Help investigate **[my research question]** using the five research skills. Check closest prior work and scientific novelty; prefer credible curated datasets with clear provenance, valid reuse rights and appropriate splits; formulate competing falsifiable hypotheses; define strong baselines, uncertainty, and leakage controls; implement a trusted project-specific runner; execute and replay-audit results; conduct an adversarial review. Explicitly answer the reader's claim/reasons/evidence/acknowledgement-and-response/warrant challenges. Keep exploratory and confirmatory evidence separate. Report actual tests, sources, limitations, and GO / REVISE / STOP gates. Do not claim novelty or publication readiness without evidence.
 
 **Guides:** [New project tutorial](docs/NEW_RESEARCH_PROJECT.md) · [Full operator guide](docs/USER_GUIDE.md) · [Two-problem cross-domain validation](docs/TWO_PROBLEM_RESULTS.md).
 

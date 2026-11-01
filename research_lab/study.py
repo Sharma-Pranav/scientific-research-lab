@@ -181,6 +181,9 @@ def run(root, slug):
     fp = fingerprints(protocol, runner, records)
     check_freeze(root, slug, protocol, fp)
     result = execute(runner, protocol, inputs)
+    # Report framing quality as a distinct, nonblocking human-review status.
+    from research_lab.significance import check_file
+    significance_preflight = check_file(project_dir(root, slug) / "significance.md", stage="framing")
     rid = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ") + "-" + uuid.uuid4().hex[:8]
     output = root / "runs" / "projects" / slug / rid
     output.mkdir(parents=True, exist_ok=False)
@@ -191,7 +194,8 @@ def run(root, slug):
                 "python": sys.version.split()[0], "platform": platform.platform(),
                 "git_commit": git_commit(root),
                 "created_utc": datetime.now(timezone.utc).isoformat(),
-                "publication_status": "NOT_AUTOMATICALLY_APPROVED"}
+                "publication_status": "NOT_AUTOMATICALLY_APPROVED",
+                "reader_significance_preflight": significance_preflight}
     for name, payload in payloads.items():
         write_new(output / name, payload)
     man_bytes = canonical(manifest)
@@ -298,9 +302,13 @@ def init(root, slug, title):
     }
     (folder / "protocol.json").write_bytes(canonical(protocol))
     (folder / "experiment.py").write_text(EXAMPLE, encoding="utf8")
+    from research_lab.significance import template as significance_template
+    (folder / "significance.md").write_text(significance_template(), encoding="utf8")
     (folder / "proposal.md").write_text(
-        f"# {title}\n\nI am studying: ...\n\nbecause I want to find out: ...\n\n"
-        "in order to help readers understand: ...\n\n"
+        f"# {title}\n\n"
+        "Complete the three-step reader-significance statement in significance.md "
+        "before treating this as a scientifically framed question. "
+        "After obtaining results, complete the five-part argument there.\n\n"
         "## H0, H1 and alternatives\n\n## Strong baselines / falsifiers\n\n"
         "## Significance and novelty review\n\n**Novelty: OPEN; publication: STOP.**\n",
         encoding="utf8")
@@ -310,7 +318,8 @@ def init(root, slug, title):
         writer.writerow(("Novelty of the proposed method", "", "", "OPEN", "Requires primary-source audit"))
     (folder / "review.md").write_text(
         "# Independent-style review\n\n"
-        "Claim / reasons / case-level evidence / counterarguments / warrant:\n\n"
+        "Claim / reasons / evidence / acknowledgement & response / warrant:\n\n"
+        "See significance.md; independent review must answer all five reader questions.\n\n"
         "**Scientific novelty: OPEN. Publication: STOP.**\n", encoding="utf8")
     return folder
 
@@ -322,11 +331,13 @@ def main():
     i = sub.add_parser("init")
     i.add_argument("slug")
     i.add_argument("--title", required=True)
-    for cmd in ("run", "freeze", "audit"):
+    for cmd in ("run", "freeze", "audit", "preflight"):
         q = sub.add_parser(cmd)
         q.add_argument("slug")
         if cmd == "audit":
             q.add_argument("--replay", action="store_true")
+        if cmd == "preflight":
+            q.add_argument("--stage", choices=("framing", "argument"), default="framing")
     args = p.parse_args()
     if args.command == "init":
         print(json.dumps({"project_dir": str(init(args.root, args.slug, args.title))}))
@@ -334,6 +345,12 @@ def main():
         print(json.dumps(run(args.root, args.slug), indent=2))
     elif args.command == "freeze":
         print(json.dumps(freeze(args.root, args.slug), indent=2))
+    elif args.command == "preflight":
+        from research_lab.significance import check_file
+        report = check_file(project_dir(args.root, args.slug) / "significance.md", stage=args.stage)
+        print(json.dumps(report, indent=2))
+        if report["status"] != "READY_FOR_HUMAN_REVIEW":
+            raise SystemExit(2)
     else:
         print(json.dumps(audit(args.root, args.slug, args.replay), indent=2))
 
