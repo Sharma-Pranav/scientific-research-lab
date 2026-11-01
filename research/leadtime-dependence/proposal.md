@@ -1,4 +1,4 @@
-# Lead-time dependence and quantile model selection — preregistered-in-Git pilot
+# Lead-time dependence and quantile model selection — version-pinned CI pilot (not external preregistration)
 
 ## Scientific framing
 

@@ -156,7 +156,8 @@ def validate_proposal(proposal):
     decisions = {k: proposal.get(k) for k in ("significance_gate", "novelty_gate", "feasibility_gate", "evidence_gate")}
     if any(v not in {"GO", "REVISE", "STOP"} for v in decisions.values()):
         raise ValueError("All four gate decisions must be explicit")
-    publication = "GO" if set(decisions.values()) == {"GO"} else "STOP"
-    if proposal.get("publication_gate") == "GO" and publication != "GO":
-        raise ValueError("Cannot claim publication GO with a blocked gate")
+    # Automated gates can only request independent review, never approve publication.
+    publication = "HUMAN_REVIEW_REQUIRED" if set(decisions.values()) == {"GO"} else "STOP"
+    if proposal.get("publication_gate") == "GO":
+        raise ValueError("Automated gates cannot authorize publication GO")
     return decisions, publication

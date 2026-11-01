@@ -41,3 +41,24 @@ Avoid parallel writes to the same `registry/` or `runs/` folder; import complete
 ## Limits
 
 The robust-location pilot tests engineering reproducibility, *not a novel statistical result*. This project contains no literature verification or real-world dataset validation. A valid audit is not a guarantee of non-tampering by someone able to rewrite the entire repository. Use signed commits / write-once external storage for stronger provenance.
+
+## Research-integrity V0.2
+
+The selection-transfer project is still a **candidate**. Novelty has not been established and no real-data experiment has been executed. Begin with `research/selection-transfer/next_experiment.md`, not manuscript drafting.
+
+Mechanical controls:
+
+```bash
+python -m unittest discover -s tests -v
+python -m research_lab.evidence research/robust-location/evidence_matrix.csv research/leadtime-dependence/evidence_matrix.csv research/selection-transfer/evidence_matrix.csv
+python -m research_lab.leadtime --config research/leadtime-dependence/exploratory.json --output research-output/exploratory
+python -m research_lab.leadtime --verify --config research/leadtime-dependence/exploratory.json --output research-output/exploratory
+python -m research_lab.leadtime --config research/leadtime-dependence/confirmatory.json --output research-output/confirmatory
+python -m research_lab.leadtime --verify --config research/leadtime-dependence/confirmatory.json --output research-output/confirmatory
+```
+
+Output directories must not already exist. The verifier checks exact protocol and implementation fingerprints, result hashes, and deterministic replay *in the same environment*. It cannot establish scientific validity, secure preregistration or historical novelty.
+
+Evidence CSV schema is `claim,source_url,exact_evidence,status,relationship_to_project`. The structural checker does not visit URLs or verify substantive source assertions. All-GO gate states return `HUMAN_REVIEW_REQUIRED`, never automatic publication approval.
+
+`research_lab.splits.rolling_origin` creates time-ordered fold boundaries with an optional embargo and sealed final holdout; `stable_group_partition` holds out complete groups. These utilities cannot by themselves prevent target or feature leakage.

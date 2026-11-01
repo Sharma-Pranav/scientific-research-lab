@@ -8,14 +8,27 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: python -m unittest discover -s tests -v
-      - run: python -m research_lab.cli gate research/robust-location/proposal.json
-      - run: python -m research_lab.cli audit
+      - name: Infrastructure and methodology tests
+        run: python -m unittest discover -s tests -v
+      - name: Validate evidence-matrix structure (not factual verification)
+        run: |
+          python -m research_lab.evidence \
+            research/robust-location/evidence_matrix.csv \
+            research/leadtime-dependence/evidence_matrix.csv \
+            research/selection-transfer/evidence_matrix.csv
+      - name: Verify legacy pilot registry and scientific stop gate
+        run: |
+          python -m research_lab.cli gate research/robust-location/proposal.json
+          python -m research_lab.cli audit
       - name: Exploratory AR1 experiment
         run: python -m research_lab.leadtime --config research/leadtime-dependence/exploratory.json --output research-output/exploratory
+      - name: Verify exploratory artifacts by deterministic replay
+        run: python -m research_lab.leadtime --verify --config research/leadtime-dependence/exploratory.json --output research-output/exploratory
       - name: Frozen confirmatory AR1 experiment
         run: python -m research_lab.leadtime --config research/leadtime-dependence/confirmatory.json --output research-output/confirmatory
-      - name: Upload independent-run evidence
+      - name: Verify confirmatory artifacts by deterministic replay
+        run: python -m research_lab.leadtime --verify --config research/leadtime-dependence/confirmatory.json --output research-output/confirmatory
+      - name: Upload experimental evidence package
         if: always()
         uses: actions/upload-artifact@v4
         with:

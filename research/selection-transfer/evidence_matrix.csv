@@ -1,7 +1,7 @@
-finding,source,source_type,evidence_checked,status,relationship
-"Lead-time variance matters for stock cost","https://doi.org/10.1016/j.ejor.2021.04.017","peer-reviewed","Publisher abstract",VERIFIED,"Strong baseline and possible direct overlap"
-"Forecast accuracy and inventory utility can diverge","https://doi.org/10.1016/j.ejor.2024.12.033","peer-reviewed","Publisher abstract",VERIFIED,"Not novel"
-"Forecast congruence helps inventory decision model choice","https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4711817","working paper","Author abstract",VERIFIED,"Must implement/test strong baseline"
-"Robust model selection via reference uncertainty and regret exists","https://www.sciencedirect.com/science/article/pii/S0950705126013997","peer-reviewed","Publisher abstract",VERIFIED,"Threat: selection regret plus abstention already used"
-"Risk-aware forecast selection considers model choice uncertainty","https://doi.org/10.1080/01605682.2026.2620516","peer-reviewed","Publisher text excerpt",VERIFIED,"Threat: risk preferences not novel"
-"Cheap warning rule jointly calibrated under cost and lead-time changes has unseen scientific contribution",,,"Novelty unverified",OPEN,"Requires full-text and citation graph review"
+claim,source_url,exact_evidence,status,relationship_to_project
+"Lead-time variance calculations affect safety stock under autocorrelation",https://doi.org/10.1016/j.ejor.2021.04.017,"Publisher highlights: ARMA model and classical strategy underperformance under positive correlation",VERIFIED,"Strong baseline and possible direct overlap"
+"Forecast accuracy and inventory utility can diverge",https://doi.org/10.1016/j.ejor.2024.12.033,"Publisher abstract: M5 inventory policies and costs change relationship of forecast accuracy and utility",VERIFIED,"Not novel"
+"Forecast congruence must be compared as a baseline",https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4711817,,UNVERIFIED,"Obtain paper and reproduce appropriate definition"
+"Robust model-selection regret approaches already exist",https://www.sciencedirect.com/science/article/pii/S0950705126013997,,UNVERIFIED,"Requires full-text source validation, not yet support for specific assertion"
+"Risk-aware forecast selection already exists",https://doi.org/10.1080/01605682.2026.2620516,,UNVERIFIED,"Requires primary full-text review and baseline feasibility"
+"Cheap calibrated warning rule robust to changing lead times and costs is a distinct contribution",,,OPEN,"Open novelty audit and out-of-sample falsification"
