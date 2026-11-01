@@ -6,6 +6,20 @@
 
 This repository is a **research execution and verification harness**, not a push-button autonomous scientist. Python executes experiments; Git records protocols; Codex helps develop questions, methods, implementations and critical reviews. The human research director must approve the question, source interpretation, experiments and claims.
 
+## For a completely NEW research problem
+
+**The repository now provides a dataset-agnostic project harness.** Use this before copying any M5 research code:
+
+~~~bash
+python -m research_lab.study init new-research-question --title "What mechanism should we test?"
+python -m research_lab.study run new-research-question
+python -m research_lab.study audit new-research-question --replay
+~~~
+
+This creates a runnable **toy** experiment with its own proposal, evidence matrix, protocol, runner, review and project-scoped run registry. You must replace the demonstration code with a real measurement and define its input files, if any. Existing M5 scripts remain *worked examples*, not dependencies of new experiments.
+
+**[Dataset-independent project tutorial](NEW_RESEARCH_PROJECT.md)** gives the runner contract, CSV and no-data examples, frozen confirmation, file fingerprints, limits and exact commands.
+
 ## 1. What it does — and what it does not
 
 Capabilities already implemented:
@@ -234,7 +248,7 @@ Lower regret is desirable within the *specific* metric and candidate set. Uncert
 
 ## 8. How to begin a NEW research question
 
-This is the core way to compound your work: reuse the rules and methods, but create a new **question-specific** experiment. The repository does not automatically generate a working new runner.
+This is the core way to compound your work: reuse the rules and methods, but create a new **question-specific** experiment. The new harness scaffolds a runnable toy runner; every new scientific question still needs its own valid domain-specific experiment and tests.
 
 ### Step 1 — Set up isolated work
 

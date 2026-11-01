@@ -8,7 +8,7 @@ A deliberately small Codex research harness: evidence-gated scientific workflow,
 
 ## Start a new research question (dataset-agnostic)
 
-The repository is **not tied to M5**. M5 is one study adapter; the general-purpose project harness is in \`research_lab/study.py\`. Each new project provides its own scientific question, protocol, trusted Python experiment, and optional input files. The reusable harness owns project setup, fingerprints, run registry, evidence capture and replay auditing.
+The repository is **not tied to M5**. M5 is one study adapter; the general-purpose project harness is in `research_lab/study.py`. Each new project provides its own scientific question, protocol, trusted Python experiment, and optional input files. The reusable harness owns project setup, fingerprints, run registry, evidence capture and replay auditing.
 
 ~~~bash
 python -m research_lab.study init my-new-question --title "Does the proposed mechanism survive a falsification test?"
@@ -16,21 +16,26 @@ python -m research_lab.study run my-new-question
 python -m research_lab.study audit my-new-question --replay
 ~~~
 
-This example executes a **toy data-free simulation** until you replace \`research/my-new-question/experiment.py\` with an actual domain-specific method. For CSV, images, other inputs or no dataset, declare files in \`protocol.json\` and implement \`run(protocol, inputs)\`. The generic harness does not invent scientifically valid methods or claims for new subjects.
+This example executes a **toy data-free simulation** until you replace `research/my-new-question/experiment.py` with an actual domain-specific method. For CSV, images, other inputs or no dataset, declare files in `protocol.json` and implement `run(protocol, inputs)`. The generic harness does not invent scientifically valid methods or claims for new subjects.
 
 **[Full new-project instructions](docs/NEW_RESEARCH_PROJECT.md)** · [Codex operator guide](docs/USER_GUIDE.md)
 
 ## Quick start
 
-Requires Python >=3.10; runtime has no third-party dependencies. From repository root:
+Requires Python >=3.10; the core and tests have no third-party runtime dependencies. From repository root:
 
 ```bash
-python -m research_lab.cli gate research/robust-location/proposal.json
-python -m research_lab.cli pilot --phase exploratory
-python -m research_lab.cli pilot --phase confirmatory
-python -m research_lab.cli audit
 python -m unittest discover -s tests -v
+python -m research_lab.cli audit
+python -m research_lab.cli gate research/robust-location/proposal.json
+
+# Independent new research project; no M5 file needed
+python -m research_lab.study init demonstration-question --title "Can this test be reproduced?"
+python -m research_lab.study run demonstration-question
+python -m research_lab.study audit demonstration-question --replay
 ```
+
+The new project begins with a reproducible **toy experiment**; replace it before making scientific claims. For the older robust-estimation pilot, `python -m research_lab.cli pilot --phase exploratory` appends new records to a shared legacy experiment registry; use a separate worktree/clone and review before committing anything.
 
 `pilot` writes immutable `runs/<run-id>/{config.json,results.json,manifest.json}` artifacts and appends a record to `registry/experiments.jsonl`. `audit` recomputes content hashes and verifies registry consistency; it does not prove that an experiment is scientifically valid. Each pilot experiment is independent, and a confirmation protocol must have been frozen before execution. **Do not edit an existing confirmatory protocol after inspecting its data**; amend under a new protocol ID. For demonstrations, sample sizes are intentionally small.
 
