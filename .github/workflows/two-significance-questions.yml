@@ -1,0 +1,109 @@
+name: Two scientific questions — significance and evidence
+on:
+  push:
+    branches: ['main', 'test/two-reader-significance-questions-v1']
+    paths:
+      - 'research/uci-bike-forecasting/significance.md'
+      - 'research/sequential-testing-risk/significance.md'
+      - 'tests/test_two_significance_questions.py'
+      - '.github/workflows/two-significance-questions.yml'
+      - 'research_lab/significance.py'
+      - 'research_lab/study.py'
+  pull_request:
+    paths:
+      - 'research/uci-bike-forecasting/significance.md'
+      - 'research/sequential-testing-risk/significance.md'
+      - 'tests/test_two_significance_questions.py'
+      - '.github/workflows/two-significance-questions.yml'
+  workflow_dispatch:
+jobs:
+  independent-questions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: All unit tests including adversarial reader-significance cases
+        run: python -m unittest discover -s tests -v
+      - name: Validate reader significance before running both studies
+        run: |
+          python -m research_lab.study preflight uci-bike-forecasting --stage framing
+          python -m research_lab.study preflight sequential-testing-risk --stage framing
+      - name: Fetch official UCI Bike Sharing release and check immutable source fingerprint
+        run: |
+          python - <<'PY'
+          import json,runpy
+          source=runpy.run_path("research/curated-three-datasets/acquire.py")
+          info=source["fetch_one"]("bike_sharing_daily")
+          with open("research/curated-three-datasets/pinned_sha256.json") as f:
+              pin=json.load(f)["bike_sharing_daily"]
+          assert info["file_sha256"]==pin,info
+          print("OFFICIAL_UCI_BIKE:",json.dumps(info,sort_keys=True))
+          PY
+      - name: Execute and replay-audit curated bike-demand research question
+        run: |
+          python -m research_lab.study run uci-bike-forecasting
+          python -m research_lab.study audit uci-bike-forecasting --replay
+      - name: Execute and replay-audit dataset-free A/B research question
+        run: |
+          python -m research_lab.study run sequential-testing-risk
+          python -m research_lab.study audit sequential-testing-risk --replay
+      - name: Check the reader argument against replayed numerical evidence
+        run: |
+          python -m research_lab.study preflight uci-bike-forecasting --stage argument
+          python -m research_lab.study preflight sequential-testing-risk --stage argument
+          python - <<'PY'
+          import json,pathlib
+          from research_lab.significance import check_file,sections
+          root=pathlib.Path(".")
+          def saved(slug):
+              entries=(root/"research"/slug/"experiments.jsonl").read_text().splitlines()
+              assert len(entries)==1
+              rid=json.loads(entries[0])["run_id"]
+              out=root/"runs"/"projects"/slug/rid
+              manifest=json.loads((out/"manifest.json").read_text())
+              result=json.loads((out/"results.json").read_text())
+              worksheet=root/"research"/slug/"significance.md"
+              assert manifest["reader_significance_preflight"]["status"]=="READY_FOR_HUMAN_REVIEW"
+              assert "significance.md" in manifest["artifact_sha256"]
+              assert (out/"significance.md").read_bytes()==worksheet.read_bytes()
+              assert check_file(worksheet,"argument")["status"]=="READY_FOR_HUMAN_REVIEW"
+              return result,sections(worksheet.read_text())
+          bike,book=saved("uci-bike-forecasting")
+          ab,statement=saved("sequential-testing-risk")
+          assert (bike["train"],bike["test"])==(611,120)
+          vals=bike["baselines"]
+          assert vals["last_day"]["mae"]<vals["last_28_day_mean"]["mae"]<vals["last_week_same_day"]["mae"]
+          assert abs(vals["last_day"]["mae"]-918.84)<0.1
+          assert abs(vals["last_week_same_day"]["mae"]-1342.27)<0.1
+          assert "918.84" in book["evidence"] and "1,342.27" in book["evidence"]
+          rates=ab["false_positive_rates"]
+          assert ab["total_replicates"]==7500
+          assert rates["false_positive_any_unadjusted"]>rates["false_positive_fixed_final"]
+          assert rates["false_positive_any_bonferroni"]<rates["false_positive_fixed_final"]
+          for key,expected in (
+              ("false_positive_fixed_final",.0512),
+              ("false_positive_any_unadjusted",.1439),
+              ("false_positive_any_bonferroni",.0315)):
+              assert abs(rates[key]-expected)<.0001,(key,rates[key])
+          assert all(x in statement["evidence"] for x in ("5.12","14.39","3.15"))
+          print("QUESTION_1_BIKE_RESULTS:",json.dumps(bike,sort_keys=True))
+          print("QUESTION_2_AB_RESULTS:",json.dumps(ab,sort_keys=True))
+          print("TWO_ARGUMENTS: structural preflight plus independent numerical checks PASS")
+          print("SCIENTIFIC_NOVELTY_PUBLICATION: STOP")
+          PY
+      - name: Archive run outputs and worksheet snapshots, never third-party raw data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: two-reader-argument-evidence
+          path: |
+            runs/projects/uci-bike-forecasting/
+            runs/projects/sequential-testing-risk/
+            research/uci-bike-forecasting/experiments.jsonl
+            research/sequential-testing-risk/experiments.jsonl
+          if-no-files-found: warn
