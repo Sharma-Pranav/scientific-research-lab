@@ -1,0 +1,15 @@
+{
+  "protocol_id": "robust-location-confirmatory-v1",
+  "phase": "confirmatory",
+  "question_id": "robust-location-pilot",
+  "dataset_version": "synthetic-gaussian-mixture-v1",
+  "n": 35,
+  "trials_per_seed": 400,
+  "seeds": [11, 13, 17, 19, 23],
+  "contamination_rates": [0, 0.05, 0.1, 0.2],
+  "contamination_sigma": 15.0,
+  "target": "mean_absolute_estimation_error",
+  "baselines": ["sample_mean", "sample_median"],
+  "frozen": true,
+  "notes": "Predefined configuration prior to pilot execution. CI and git history provide version context; not formal preregistration."
+}

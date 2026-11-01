@@ -1,0 +1,17 @@
+{
+  "id": "robust-location-pilot",
+  "topic": "location estimation under Gaussian mixture contamination",
+  "question": "When does median absolute error outperform the sample mean under heavy-tailed contamination?",
+  "significance": "Help readers understand why an estimator should match the data generating process",
+  "claim": "For the specified mixture, median MAE is lower than mean MAE with moderate contamination",
+  "reasons": "Mean is sensitive to large outliers while the median has a bounded influence from individual points",
+  "falsifier": "Across independent simulation units, median MAE is not lower under specified contaminated regimes",
+  "baselines": ["sample_mean", "sample_median"],
+  "significance_gate": "GO",
+  "feasibility_gate": "GO",
+  "novelty_gate": "STOP",
+  "evidence_gate": "REVISE",
+  "publication_gate": "STOP",
+  "novelty_reason": "Classic robust statistics example; pilot is infrastructure validation, not a novel contribution",
+  "human_review": "Human review required for any future change to novelty status"
+}

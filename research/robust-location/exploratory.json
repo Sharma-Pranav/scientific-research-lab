@@ -1,0 +1,15 @@
+{
+  "protocol_id": "robust-location-exploratory-v1",
+  "phase": "exploratory",
+  "question_id": "robust-location-pilot",
+  "dataset_version": "synthetic-gaussian-mixture-v1",
+  "n": 35,
+  "trials_per_seed": 160,
+  "seeds": [2, 3, 5],
+  "contamination_rates": [0, 0.05, 0.1, 0.2],
+  "contamination_sigma": 15.0,
+  "target": "mean_absolute_estimation_error",
+  "baselines": ["sample_mean", "sample_median"],
+  "frozen": false,
+  "notes": "Exploratory estimates; not confirmatory inference"
+}
