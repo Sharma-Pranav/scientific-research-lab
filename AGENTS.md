@@ -1,5 +1,27 @@
 # Scientific research invariants
 
+## Reader significance and argument: two separate quality gates
+
+**Start with the reader's "So what?" before committing to a large experiment.** Write:
+
+1. **I am studying** — the concrete topic or phenomenon.
+2. **because I want to find out** — the specific unknown question or mechanism.
+3. **in order to help my reader understand** — the wider understanding or consequential decision for someone else.
+
+After obtaining evidence, stress-test the argument against the reader's five objections:
+**Claim** (what is the point?), **Reasons** (why believe it?),
+**Evidence** (how do you know?), **Acknowledgement & Response**
+(what about the strongest competing explanation?), and **Warrant**
+(why do the reasons/evidence support that specific point?).
+
+New projects have research/<slug>/significance.md. Check framing before costly scientific work
+with \`python -m research_lab.study preflight <slug> --stage framing\`;
+after results, check all five argument elements with \`--stage argument\`.
+A READY_FOR_HUMAN_REVIEW check means only that the worksheet is structurally complete.
+It does **not** verify scientific significance, evidence correctness, novelty, or publication readiness.
+A toy experiment may still run with REVISE status so users can test infrastructure; never treat
+a completed run as a passed reader-significance gate.
+
 ## Data selection: default to curated evidence
 
 - **Prefer curated datasets** directly maintained by research institutions, benchmark maintainers, official public agencies, peer-reviewed supplementary archives, or established repositories, when suitable for the actual question. Curated does **not** automatically mean bias-free or suitable for a particular inference.

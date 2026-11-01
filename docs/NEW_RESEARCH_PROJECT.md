@@ -10,6 +10,30 @@ The original M5 modules are **examples**, not the framework. A new question uses
 
 The framework cannot automatically invent a scientifically valid experiment for an arbitrary new domain. The researcher and Codex must still implement the measurements and establish that their design is meaningful.
 
+## Mandatory reader-significance workflow for new research questions
+
+After \`study init\`, the new project contains \`significance.md\` with the **three-step
+significance formula** and **five-part argument**. The default file contains deliberate
+placeholders; it does not imply the scientific question is ready.
+
+1. **Framing (before costly work):** Fill "I am studying ... because I want to
+   find out ... in order to help my reader understand ..." with concrete text.
+   Name the external reader and the broader understanding or decision affected.
+2. Run \`python -m research_lab.study preflight <slug> --stage framing\`.
+   It exits nonzero until all three sections contain non-placeholder text.
+3. **Argument (after evidence exists):** Write a scoped Claim, supporting Reasons,
+   inspectable Evidence (results/artifact path, DOI, source link, or proof), a serious
+   Acknowledgement & Response, and the Warrant connecting the evidence to the claim.
+4. Run \`python -m research_lab.study preflight <slug> --stage argument\`.
+   This checks structure and traceability only. An independent reviewer still
+   decides whether reader significance and the argument actually hold.
+
+The general research runner remains usable with a not-yet-complete worksheet
+for testing/scaffolding: its manifest records the framing status as \`REVISE\`
+until completed. Do **not** treat a successful code run as a passed significance gate.
+
+See [the full worksheet and worked example](SIGNIFICANCE_AND_ARGUMENT.md).
+
 ## Dataset choice: curated by default, not mandatory
 
 Before implementing a new empirical study, look first for **curated, maintained, documented datasets** relevant to the scientific question. Prefer direct official benchmark or institutionally hosted sources over opaque mirrors or ad hoc scraped collections where comparable quality is available.
@@ -33,6 +57,7 @@ This first run deliberately executes a simple **toy coin simulation** that the s
 | File | Responsibility |
 |---|---|
 | proposal.md | Topic, question, reader-facing significance, competing hypotheses |
+| significance.md | Three-step reader significance and five-part claim/reasons/evidence/response/warrant worksheet |
 | evidence_matrix.csv | Primary sources, relevance, support and novelty audit |
 | protocol.json | Research question, phase, hypothesis, falsifier, runner, seeds, settings and inputs |
 | experiment.py | Domain-specific experiment code, exposing run(protocol, inputs) |
