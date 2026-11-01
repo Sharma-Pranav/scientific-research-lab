@@ -107,3 +107,11 @@ The research lab now has a separately audited extension measuring whether histor
 - [Research execution workflow](.github/workflows/m5-history.yml)
 
 The observed history-length effect is inconsistent and heavily influenced by particular stores. No novelty, causal mechanism, or publication claim is established. **Publication gate: STOP.**
+
+## Tested against two unrelated research problems
+
+A new integration suite uses the same generic research runner for **checksum-pinned synthetic industrial sensor CSV data** and a **dataset-free randomized A/B significance simulation**. Both executed on GitHub Actions, passed deterministic replay audits and preserved separate projects. This confirms execution-layer portability, not scientific novelty or validity on real industrial datasets.
+
+- [Full cross-domain execution report](docs/TWO_PROBLEM_RESULTS.md)
+- [Exact experiment protocols and limitations](docs/TWO_PROBLEM_VALIDATION.md)
+- [GitHub Actions two-problem workflow](.github/workflows/two-research-problems.yml)

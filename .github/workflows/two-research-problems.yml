@@ -1,7 +1,7 @@
 name: Two independent research problems (generic harness)
 on:
   push:
-    branches: ['test/two-independent-research-problems']
+    branches: ['main', 'test/two-independent-research-problems']
     paths:
       - 'research/sensor-drift-anomaly/**'
       - 'research/sequential-testing-risk/**'
