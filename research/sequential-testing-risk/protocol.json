@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "project": "sequential-testing-risk",
+  "phase": "exploratory",
+  "frozen": false,
+  "question": "Under a true null, does repeated uncorrected A/B significance testing inflate false positives?",
+  "significance": "Experiment design requires valid false-discovery controls when teams repeatedly inspect outcomes.",
+  "hypothesis": "Five uncorrected interim z-tests at 5% nominal alpha exceed the fixed-final-test false positive rate, while Bonferroni controls family-wise error.",
+  "falsifier": "Uncorrected any-look false-positive rate is no higher than fixed-final rate, or adjusted rate exceeds nominal level by practically meaningful margin.",
+  "runner": "experiment.py",
+  "inputs": [],
+  "settings": {
+    "observations_per_arm_per_look": 20,
+    "looks": 5,
+    "replicates_per_seed": 2500,
+    "alpha": 0.05,
+    "null_effect": 0
+  },
+  "seeds": [
+    11,
+    19,
+    23
+  ]
+}
