@@ -1,0 +1,34 @@
+{
+  "question_id": "leadtime-quantile-ranking",
+  "generator_version": "gaussian-ar1-v1",
+  "phase": "exploratory",
+  "frozen": false,
+  "mean": 100,
+  "sigma": 10,
+  "trials_per_seed": 200,
+  "seeds": [
+    211,
+    223,
+    227
+  ],
+  "lead_times": [
+    1,
+    3,
+    7
+  ],
+  "rhos": [
+    0,
+    0.3,
+    0.6,
+    0.85
+  ],
+  "alphas": [
+    0.75,
+    0.9
+  ],
+  "paddings": [
+    0.15,
+    0.45,
+    0.7
+  ]
+}

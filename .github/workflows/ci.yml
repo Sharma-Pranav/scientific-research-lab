@@ -11,3 +11,14 @@ jobs:
       - run: python -m unittest discover -s tests -v
       - run: python -m research_lab.cli gate research/robust-location/proposal.json
       - run: python -m research_lab.cli audit
+      - name: Exploratory AR1 experiment
+        run: python -m research_lab.leadtime --config research/leadtime-dependence/exploratory.json --output research-output/exploratory
+      - name: Frozen confirmatory AR1 experiment
+        run: python -m research_lab.leadtime --config research/leadtime-dependence/confirmatory.json --output research-output/confirmatory
+      - name: Upload independent-run evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: leadtime-protocol-results
+          path: research-output/
+          if-no-files-found: warn

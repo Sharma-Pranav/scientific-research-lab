@@ -1,0 +1,7 @@
+claim,primary_source,verified_support,status,overlap
+"Forecast accuracy and inventory rankings can diverge","https://doi.org/10.1016/j.ejor.2024.12.033","Publisher abstract: M5 experiment finds relationship depends on costs lead times intermittency",VERIFIED,"Direct overlap; no generic novelty"
+"Lead-time variance aggregation can underestimate stock under correlated forecast errors","https://doi.org/10.1016/j.ejor.2016.06.035","Publisher abstract: 2017 corrected variance and reorder level calculations",VERIFIED,"Core mechanism already studied"
+"Under autocorrelated demand iid lead-time variance aggregation can worsen costs","https://doi.org/10.1016/j.ejor.2021.04.017","Publisher abstract: ARMA analytical and numerical comparison with inventory costs",VERIFIED,"Very strong overlap; novelty STOP"
+"Forecast congruence measures forecast revision volatility with inventory impacts","https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4711817","Working-paper abstract: congruence and volatility of ordering",VERIFIED,"Potential extension risk"
+"Complete-order service can rank intermittent forecasters differently from point accuracy","https://arxiv.org/abs/2609.13840","Preprint abstract reports -0.555 correlation on industrial panel",VERIFIED,"Broad evaluation overlap; preprint not independent validation"
+"A new out-of-domain screening diagnostic adds scientific insight beyond existing methods",,,"OPEN","Requires new literature audit and independent validation"
