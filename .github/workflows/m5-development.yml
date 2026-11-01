@@ -1,7 +1,7 @@
 name: M5 real-data development baselines
 on:
   push:
-    branches: ['research/m5-realdata-baselines-v1']
+    branches: ['main', 'research/m5-realdata-baselines-v1']
     paths:
       - 'research_lab/m5_baselines.py'
       - 'research/selection-transfer/m5_development.json'

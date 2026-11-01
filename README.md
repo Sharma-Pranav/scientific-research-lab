@@ -62,3 +62,14 @@ Output directories must not already exist. The verifier checks exact protocol an
 Evidence CSV schema is `claim,source_url,exact_evidence,status,relationship_to_project`. The structural checker does not visit URLs or verify substantive source assertions. All-GO gate states return `HUMAN_REVIEW_REQUIRED`, never automatic publication approval.
 
 `research_lab.splits.rolling_origin` creates time-ordered fold boundaries with an optional embargo and sealed final holdout; `stable_group_partition` holds out complete groups. These utilities cannot by themselves prevent target or feature leakage.
+
+## M5 real-data development benchmark (2026-11-01)
+
+The first real-data experiment is implemented in `research_lab/m5_baselines.py`. It uses an MD5-pinned M5 source file and fixed identifier-only SKU selection, protects the last 112 days and Wisconsin holdout, and compares historical daily pinball model selection with partial and full lead-time cost validation. It does **not** test a proposed new screening method or support a publication claim.
+
+- Protocol and data permissions: [research/selection-transfer/m5_data_and_protocol.md](research/selection-transfer/m5_data_and_protocol.md)
+- Executed results and SHA256 provenance: [research/selection-transfer/m5_development_results.md](research/selection-transfer/m5_development_results.md)
+- Independent-style critique: [reviews/m5-development-internal-review.md](reviews/m5-development-internal-review.md)
+- Reproducible workflow: [.github/workflows/m5-development.yml](.github/workflows/m5-development.yml)
+
+A zero-dependency local run requires an authorized M5 CSV and can download the public Zenodo mirror when permitted. The GitHub workflow does not upload raw data; only derived research artifacts.
