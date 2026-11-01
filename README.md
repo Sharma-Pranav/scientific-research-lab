@@ -128,3 +128,9 @@ A new integration suite uses the same generic research runner for **checksum-pin
 - [Full cross-domain execution report](docs/TWO_PROBLEM_RESULTS.md)
 - [Exact experiment protocols and limitations](docs/TWO_PROBLEM_VALIDATION.md)
 - [GitHub Actions two-problem workflow](.github/workflows/two-research-problems.yml)
+
+## Tested with three real curated datasets
+
+The dataset-independent research harness has now been exercised on three **real UCI datasets** with distinct research questions and evaluation methods: Iris classification, red Wine Quality regression, and chronological Bike Sharing forecasting. All use the same generic project CLI and replay audits. Source SHA256 fingerprints are pinned; raw data are not committed.
+
+**[See actual metrics, source attribution, negative results and reproduction instructions](docs/THREE_CURATED_DATASETS_RESULTS.md).** These studies demonstrate engineering portability, **not scientific novelty or publication readiness**.

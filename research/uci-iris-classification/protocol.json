@@ -12,7 +12,7 @@
     {
       "name": "dataset",
       "path": "data/curated/iris.data",
-      "sha256": null
+      "sha256": "6f608b71a7317216319b4d27b4d9bc84e6abd734eda7872b71a458569e2656c0"
     }
   ],
   "settings": {

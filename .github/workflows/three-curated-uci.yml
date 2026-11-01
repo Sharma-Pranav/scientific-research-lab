@@ -1,7 +1,7 @@
 name: Three curated UCI datasets — cross-domain real-data validation
 on:
   push:
-    branches: ['test/three-curated-uci-datasets']
+    branches: ['main', 'test/three-curated-uci-datasets']
     paths:
       - 'research/uci-*/**'
       - 'research/curated-three-datasets/**'
@@ -28,7 +28,7 @@ jobs:
       - name: Run repository and data-adapter unit tests
         run: python -m unittest discover -s tests -v
       - name: Fetch all three official curated UCI releases (no synthetic substitution)
-        run: python research/curated-three-datasets/acquire.py --root .
+        run: python research/curated-three-datasets/acquire.py --root . --expected-hashes research/curated-three-datasets/pinned_sha256.json
       - name: Run and replay-audit biological classification
         run: |
           python -m research_lab.study run uci-iris-classification
