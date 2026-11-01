@@ -73,3 +73,14 @@ The first real-data experiment is implemented in `research_lab/m5_baselines.py`.
 - Reproducible workflow: [.github/workflows/m5-development.yml](.github/workflows/m5-development.yml)
 
 A zero-dependency local run requires an authorized M5 CSV and can download the public Zenodo mirror when permitted. The GitHub workflow does not upload raw data; only derived research artifacts.
+
+## Exploratory M5 history-length falsification (2026-11-01)
+
+The research lab now has a separately audited extension measuring whether historical policy-validation lookback length (1/3/6/12 windows) improves out-of-window forecast selection. Three selection families are evaluated: policy loss, full daily pinball and daily pinball matched by loss-count (not CPU). The study uses the same CA/TX development panel; Wisconsin and the final 112 days remain unused for scoring.
+
+- [Predetermined exploratory protocol](research/selection-transfer/history_length_protocol.md)
+- [Actual results, provenance, and disconfirming sensitivity](research/selection-transfer/history_length_results.md)
+- [Adversarial methodological review](reviews/m5-history-falsification-review.md)
+- [Research execution workflow](.github/workflows/m5-history.yml)
+
+The observed history-length effect is inconsistent and heavily influenced by particular stores. No novelty, causal mechanism, or publication claim is established. **Publication gate: STOP.**
