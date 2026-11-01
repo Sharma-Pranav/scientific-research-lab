@@ -36,14 +36,14 @@ def document(fields):
 
 
 class SignificanceTests(unittest.TestCase):
-    def test_blank_template_must_fail_frama_and_argument_preflight(self):
+    def test_blank_template_must_fail_framing_and_argument_preflight(self):
         for stage in ("framing", "argument"):
             result = assess(template(), stage=stage)
             self.assertEqual(result["status"], "REVISE")
             self.assertIsNone(result["three_step_statement"])
             self.assertGreater(len(result["issues"]), 0)
 
-    def test_three_step_frama_can_pass_without_pretending_final_evidence(self):
+    def test_three_step_framing_can_pass_without_pretending_final_evidence(self):
         state = assess(document(FRAME), stage="framing")
         self.assertEqual(state["status"], "READY_FOR_HUMAN_REVIEW")
         self.assertIn("because I want to find out", state["three_step_statement"])
@@ -85,6 +85,10 @@ class SignificanceTests(unittest.TestCase):
             run_record = run(root, "test-significance")
             manifest = json.loads((Path(run_record["directory"]) / "manifest.json").read_text())
             self.assertEqual(manifest["reader_significance_preflight"]["status"], "REVISE")
+            frozen_sheet = Path(run_record["directory"]) / "significance.md"
+            self.assertTrue(frozen_sheet.is_file())
+            self.assertEqual(frozen_sheet.read_text(), (project / "significance.md").read_text())
+            self.assertIn("significance.md", manifest["artifact_sha256"])
             self.assertEqual(audit(root, "test-significance", replay=True)["runs"], 1)
             cmd = [sys.executable, "-m", "research_lab.study", "--root",
                    str(root), "preflight", "test-significance"]
@@ -97,8 +101,16 @@ class SignificanceTests(unittest.TestCase):
             deep = subprocess.run(cmd + ["--stage", "argument"], capture_output=True, text=True)
             self.assertEqual(deep.returncode, 2)
             (project / "significance.md").write_text(document({**FRAME, **ARGUMENT}), encoding="utf8")
+            # Later improvements may edit the live worksheet, never past evidence.
+            self.assertEqual(audit(root, "test-significance", replay=True)["runs"], 1)
+            self.assertNotEqual(frozen_sheet.read_text(), (project / "significance.md").read_text())
             final = subprocess.run(cmd + ["--stage", "argument"], capture_output=True, text=True)
             self.assertEqual(final.returncode, 0, final.stderr)
+            # Even a coordinated change to one artifact is found by its run manifest.
+            frozen_sheet.chmod(0o644)
+            frozen_sheet.write_text("fabricated significance")
+            with self.assertRaisesRegex(ValueError, "Saved artifact integrity failure"):
+                audit(root, "test-significance")
 
 
 if __name__ == "__main__":

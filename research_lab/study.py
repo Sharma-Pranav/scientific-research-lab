@@ -188,6 +188,11 @@ def run(root, slug):
     output = root / "runs" / "projects" / slug / rid
     output.mkdir(parents=True, exist_ok=False)
     payloads = {"protocol.json": canonical(protocol), "results.json": canonical(result)}
+    # Snapshot the worksheet used at execution without freezing the editable
+    # current argument: later reasoning can change, historical evidence cannot.
+    worksheet = project_dir(root, slug) / "significance.md"
+    if worksheet.is_file():
+        payloads["significance.md"] = worksheet.read_bytes()
     manifest = {"schema_version": 1, "run_id": rid, "project": slug,
                 "phase": protocol["phase"], "status": "completed",
                 **fp, "artifact_sha256": {k: sha(v) for k, v in payloads.items()},
@@ -250,6 +255,11 @@ def audit(root, slug, replay=False):
             raise ValueError("Saved protocol altered")
         if sha(res_bytes) != man["artifact_sha256"]["results.json"]:
             raise ValueError("Saved result altered")
+        for artifact, expected in man["artifact_sha256"].items():
+            if artifact not in {"protocol.json", "results.json", "significance.md"}:
+                raise ValueError("Unexpected run artifact in manifest")
+            if sha((folder / artifact).read_bytes()) != expected:
+                raise ValueError(f"Saved artifact integrity failure: {artifact}")
         if replay:
             regenerated = canonical(execute(runner, protocol, paths))
             if regenerated != res_bytes:
