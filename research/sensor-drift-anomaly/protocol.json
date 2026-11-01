@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "project": "sensor-drift-anomaly",
+  "phase": "exploratory",
+  "frozen": false,
+  "question": "Does robust rolling normalization reduce false alarms caused by sensor baseline shifts?",
+  "significance": "Operational alarms should remain useful under calibrated sensor baseline drift, not simply become noisy.",
+  "hypothesis": "Under a known baseline shift, past-only rolling MAD detects synthetic spikes with fewer false positives than a fixed initial 3-sigma threshold.",
+  "falsifier": "The rolling method has no lower shifted-segment false positive rate, or loses substantial recall of injected faults.",
+  "runner": "experiment.py",
+  "inputs": [
+    {
+      "name": "telemetry",
+      "path": "data/temperature_sensor.csv",
+      "sha256": "74910aa0dc2bcdf60531f5f04ae5de903eb3ebae4a0358931757ff2b60eaa0e3"
+    }
+  ],
+  "settings": {
+    "calibration_points": 32,
+    "rolling_window": 31,
+    "threshold": 3,
+    "mad_floor": 0.5,
+    "fixture_seed": 65021
+  },
+  "seeds": [
+    65021
+  ]
+}

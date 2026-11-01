@@ -1,0 +1,80 @@
+name: Two independent research problems (generic harness)
+on:
+  push:
+    branches: ['main', 'test/two-independent-research-problems']
+    paths:
+      - 'research/sensor-drift-anomaly/**'
+      - 'research/sequential-testing-risk/**'
+      - '.github/workflows/two-research-problems.yml'
+  pull_request:
+    paths:
+      - 'research/sensor-drift-anomaly/**'
+      - 'research/sequential-testing-risk/**'
+      - '.github/workflows/two-research-problems.yml'
+  workflow_dispatch:
+jobs:
+  independent-studies:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Clone exact committed repository tree
+        uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify repository core
+        run: python -m unittest discover -s tests -q
+      - name: Generate independent deterministic CSV source
+        run: python research/sensor-drift-anomaly/generate_fixture.py
+      - name: Study A — sensor telemetry with SHA256-pinned CSV
+        run: |
+          python -m research_lab.study run sensor-drift-anomaly
+          python -m research_lab.study audit sensor-drift-anomaly --replay
+      - name: Study B — sequential A/B simulation without external data
+        run: |
+          python -m research_lab.study run sequential-testing-risk
+          python -m research_lab.study audit sequential-testing-risk --replay
+      - name: Independent domain-specific scientific controls
+        run: |
+          python - <<'PY'
+          import hashlib, json, pathlib
+          root=pathlib.Path('.')
+          def evidence(slug):
+              reg=(root/'research'/slug/'experiments.jsonl').read_text().splitlines()
+              assert len(reg)==1
+              rid=json.loads(reg[0])['run_id']
+              p=root/'runs'/'projects'/slug/rid
+              return json.loads((p/'results.json').read_text()),json.loads((p/'manifest.json').read_text())
+          sensor, sensor_manifest=evidence('sensor-drift-anomaly')
+          seq,seq_manifest=evidence('sequential-testing-risk')
+          assert sensor_manifest['inputs']['telemetry']['sha256']=='74910aa0dc2bcdf60531f5f04ae5de903eb3ebae4a0358931757ff2b60eaa0e3'
+          assert seq_manifest['inputs']=={}
+          assert sensor_manifest['project']!='sequential-testing-risk'
+          assert sensor['n_observations']==240 and sensor['n_faults_after_calibration']==8
+          fixed=sensor['methods']['fixed_3sigma']['after_shift']
+          robust=sensor['methods']['past_rolling_mad']['after_shift']
+          assert robust['fp'] < fixed['fp'] and robust['recall']>=0.8
+          assert sensor['methods']['past_rolling_mad']['before_shift']['fp']<=2
+          rates=seq['false_positive_rates']
+          assert seq['total_replicates']==7500
+          assert 0.03<rates['false_positive_fixed_final']<0.07
+          assert rates['false_positive_any_unadjusted']>rates['false_positive_fixed_final']+0.04
+          assert rates['false_positive_any_bonferroni']<=0.05
+          assert rates['false_positive_any_bonferroni']<rates['false_positive_any_unadjusted']
+          print('STUDY_A:',json.dumps(sensor,sort_keys=True))
+          print('STUDY_B:',json.dumps(seq,sort_keys=True))
+          print('PROVENANCE: both independently audited; one file-based, one no-data; distinct registries')
+          PY
+      - name: Upload derived evidence only (no CSV source)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: two-independent-research-problems
+          path: |
+            runs/projects/sensor-drift-anomaly/
+            runs/projects/sequential-testing-risk/
+            research/sensor-drift-anomaly/experiments.jsonl
+            research/sequential-testing-risk/experiments.jsonl
+          if-no-files-found: warn
