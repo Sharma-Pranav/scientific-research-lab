@@ -1,4 +1,4 @@
-# Scientific Research Lab — research harness and M5 studies
+# Scientific Research Lab
 
 ## Start here — research on any problem
 
