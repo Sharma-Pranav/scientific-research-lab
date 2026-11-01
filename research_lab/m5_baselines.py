@@ -194,11 +194,70 @@ def run(cfg,panel,meta):
                            "Evaluation compute is not yet rigorously budget matched",
                            "No new method and no publication claim"]}
 
+def audit_output(folder, protocol_path):
+    """Independently recalculate summary and per-row regret from saved case outputs."""
+    folder=Path(folder)
+    manifest=json.loads((folder/"manifest.json").read_bytes())
+    result_raw=(folder/"results.json").read_bytes()
+    cfg_raw=(folder/"config.json").read_bytes()
+    result=json.loads(result_raw)
+    cfg=json.loads(cfg_raw)
+    if hashlib.sha256(result_raw).hexdigest()!=manifest["result_sha256"]:
+        raise ValueError("Saved result checksum mismatch")
+    if hashlib.sha256(cfg_raw).hexdigest()!=manifest["protocol_sha256"]:
+        raise ValueError("Saved protocol checksum mismatch")
+    if canonical(cfg)!=canonical(json.loads(Path(protocol_path).read_bytes())):
+        raise ValueError("Saved protocol does not match current reference")
+    if result["protocol_sha256"]!=manifest["protocol_sha256"]:
+        raise ValueError("Protocol/experiment inconsistency")
+    if result["data"]["md5"]!=manifest["dataset_md5"] or manifest["dataset_md5"]!=MD5:
+        raise ValueError("Data source checksum inconsistent")
+    if result["data"]["sample_id_sha256"]!=manifest["sample_sha256"]:
+        raise ValueError("Identifier sample fingerprint inconsistent")
+    expected_n=cfg["per_stratum"]*6
+    if result["n_skus"]!=expected_n or len({x["series_id"] for x in result["evaluations"]})!=expected_n:
+        raise ValueError("Development series count mismatch")
+    bounds=verify_protocol(cfg,result["data"]["n_days"])
+    if result["boundaries"]!=bounds or result["holdout_states_excluded"]!=["WI"]:
+        raise ValueError("Holdout boundaries inconsistent")
+    rows=result["evaluations"]
+    if len(rows)!=expected_n*len(cfg["origins"])*len(cfg["alphas"])*len(cfg["lead_times"]):
+        raise ValueError("Incomplete benchmark grid")
+    if result["scientific_status"]!="EXPLORATORY_BASELINES_ONLY_PUBLICATION_STOP":
+        raise ValueError("Invalid publication status")
+    if set(x["state"] for x in rows)!={"CA","TX"}:
+        raise ValueError("Group holdout contaminated")
+    for row in rows:
+        if row["origin"] not in cfg["origins"] or row["lead_time"] not in cfg["lead_times"] or row["alpha"] not in cfg["alphas"]:
+            raise ValueError("Case uses invalid horizon or origin")
+        values=row["candidate_costs"]
+        if set(values)!=set(METHODS):
+            raise ValueError("Missing baseline candidates")
+        best=min(values.values())
+        if abs(best-row["ex_post_oracle_cost"])>1e-8:
+            raise ValueError("Oracle cost does not match candidates")
+        for name,choice in row["selected"].items():
+            if name not in {"daily_pinball","partial_replay","full_replay"} or choice not in values:
+                raise ValueError("Invalid selector or method")
+            if abs(row["regret"][name]-max(0.,values[choice]-best))>1e-8:
+                raise ValueError("Regret does not match observed candidate costs")
+    if canonical(summarize(rows))!=canonical(result["summary"]):
+        raise ValueError("Summary does not match case-level results")
+    return {"status":"PASS","cases":len(rows),"n_skus":expected_n,
+            "results_sha256":manifest["result_sha256"],"protocol_sha256":manifest["protocol_sha256"],
+            "sealed_state":"WI"}
+
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--config",required=True);p.add_argument("--data",default="data/raw/sales_train_validation.csv")
     p.add_argument("--output",required=True);p.add_argument("--download",action="store_true")
-    args=p.parse_args();cfg=json.loads(Path(args.config).read_text())
+    p.add_argument("--verify",action="store_true",help="Audit saved results and summary without loading raw data")
+    args=p.parse_args()
+    if args.verify:
+        print(json.dumps(audit_output(args.output,args.config),sort_keys=True))
+        return
+    cfg=json.loads(Path(args.config).read_text())
     acquire(args.data,args.download)
     panel,meta=load_panel(args.data,n_days=cfg["n_days"],n_each=cfg["per_stratum"])
     result=run(cfg,panel,meta)

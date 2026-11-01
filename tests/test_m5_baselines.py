@@ -61,6 +61,49 @@ class M5BaselineTests(unittest.TestCase):
             again,_=load_panel(p,n_days=900,n_each=1)
             self.assertEqual([a["id"] for a in panel],[a["id"] for a in again])
 
+    def test_audit_detects_forged_case_and_summary(self):
+        import hashlib
+        import json
+        from research_lab.m5_baselines import audit_output, summarize, canonical
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)
+            cfg=root/"protocol.json"
+            cfg.write_text(json.dumps(CFG))
+            rows=[]
+            for state in ("CA","TX"):
+                for cat in ("FOODS","HOBBIES","HOUSEHOLD"):
+                    for origin in CFG["origins"]:
+                        for alpha in CFG["alphas"]:
+                            for horizon in CFG["lead_times"]:
+                                rows.append({
+                                  "state":state,"series_id":f"{state}-{cat}",
+                                  "origin":origin,"alpha":alpha,"lead_time":horizon,
+                                  "candidate_costs":{method:1. for method in METHODS},
+                                  "ex_post_oracle_cost":1.,
+                                  "selected":{"daily_pinball":"mean28","partial_replay":"mean56",
+                                              "full_replay":"seasonal_naive"},
+                                  "regret":{"daily_pinball":0.,"partial_replay":0.,"full_replay":0.}
+                                })
+            res={"protocol_sha256":hashlib.sha256(canonical(CFG)).hexdigest(),
+                 "data":{"md5":"26a366a25beb57b0a8f4c7b148758f94",
+                         "n_days":900,"sample_id_sha256":"fixture"},
+                 "n_skus":6,"evaluations":rows,"summary":summarize(rows),
+                 "holdout_states_excluded":["WI"],"boundaries":verify_protocol(CFG,900),
+                 "scientific_status":"EXPLORATORY_BASELINES_ONLY_PUBLICATION_STOP"}
+            for name,body in (("config.json",canonical(CFG)),("results.json",canonical(res))):
+                (root/name).write_bytes(body)
+            manifest={"protocol_sha256":res["protocol_sha256"],
+                      "result_sha256":hashlib.sha256(canonical(res)).hexdigest(),
+                      "dataset_md5":res["data"]["md5"],"sample_sha256":"fixture"}
+            (root/"manifest.json").write_bytes(canonical(manifest))
+            self.assertEqual(audit_output(root,cfg)["status"],"PASS")
+            res["evaluations"][0]["regret"]["daily_pinball"]=123.
+            (root/"results.json").write_bytes(canonical(res))
+            manifest["result_sha256"]=hashlib.sha256(canonical(res)).hexdigest()
+            (root/"manifest.json").write_bytes(canonical(manifest))
+            with self.assertRaisesRegex(ValueError,"Regret does not match"):
+                audit_output(root,cfg)
+
     def test_regret_report(self):
         a={"lead_time":7,"alpha":.9,"series_id":"one",
            "regret":{"daily_pinball":1.,"partial_replay":0.,"full_replay":0.}}

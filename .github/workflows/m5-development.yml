@@ -24,6 +24,9 @@ jobs:
       - name: Download pinned M5 source and execute development-only baseline
         run: |
           python -m research_lab.m5_baselines --config research/selection-transfer/m5_development.json --output research-output/m5-development --download
+      - name: Audit artifact hashes, per-case regret and aggregate summaries
+        run: |
+          python -m research_lab.m5_baselines --config research/selection-transfer/m5_development.json --output research-output/m5-development --verify
       - name: Guardrails and result summary
         run: |
           python - <<'PY'
