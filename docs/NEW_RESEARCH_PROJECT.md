@@ -10,6 +10,14 @@ The original M5 modules are **examples**, not the framework. A new question uses
 
 The framework cannot automatically invent a scientifically valid experiment for an arbitrary new domain. The researcher and Codex must still implement the measurements and establish that their design is meaningful.
 
+## Dataset choice: curated by default, not mandatory
+
+Before implementing a new empirical study, look first for **curated, maintained, documented datasets** relevant to the scientific question. Prefer direct official benchmark or institutionally hosted sources over opaque mirrors or ad hoc scraped collections where comparable quality is available.
+
+A dataset qualifies as a credible research input only after checking: provenance and author/publisher; stable release/version; documentation/data dictionary; rights/license for use and redistribution; coverage and representativeness; label/measurement reliability; known missingness, bias and duplication; and split suitability (including time, group and leakage constraints). Store source links and fingerprint hashes in the protocol; keep raw third-party/private data out of Git unless the license explicitly allows distribution.
+
+**Do not blindly favor popular benchmarks.** Curated-but-mismatched data may be worse than a well-designed alternative. Explain why the chosen data actually measure the proposed mechanism. Synthetic data are preferred for deterministic smoke tests or controlled demonstrations, and are legitimate for theoretical simulation, but cannot by themselves establish external real-world validity. Projects with no data (such as theoretical or synthetic experiments) remain supported.
+
 ## 1. First use: a new project, with no dataset
 
 From the cloned repo root (Python 3.10+, Git):
