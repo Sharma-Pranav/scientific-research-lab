@@ -1,6 +1,10 @@
-# Scientific Research Lab — v0.1
+# Scientific Research Lab — research harness and M5 studies
 
 A deliberately small Codex research harness: evidence-gated scientific workflow, isolated Git worktrees, append-only experiment registry, artifact audit and reproducible simulation pilot. **It does not autonomously establish scientific novelty or publication readiness.**
+
+**Start here:** [Detailed operator guide](docs/USER_GUIDE.md) — installation, Codex skills, exact commands, GitHub Actions, interpreting evidence, new research workflows, and troubleshooting.
+
+**Status:** the repository supports repeatable research engineering and real-data exploratory experiments. The M5 studies were executed and verified in GitHub Actions. Scientific novelty and a publication-ready result remain **unproven**.
 
 ## Quick start
 
@@ -40,11 +44,11 @@ Avoid parallel writes to the same `registry/` or `runs/` folder; import complete
 
 ## Limits
 
-The robust-location pilot tests engineering reproducibility, *not a novel statistical result*. This project contains no literature verification or real-world dataset validation. A valid audit is not a guarantee of non-tampering by someone able to rewrite the entire repository. Use signed commits / write-once external storage for stronger provenance.
+The robust-location pilot tests engineering reproducibility, *not a novel statistical result*. Literature claims are represented in matrices and require manual verification; subsequent M5 real-data research studies were executed but do not establish novel scientific claims. A valid audit is not a guarantee of non-tampering by someone able to rewrite the entire repository. Use signed commits / write-once external storage for stronger provenance.
 
 ## Research-integrity V0.2
 
-The selection-transfer project is still a **candidate**. Novelty has not been established and no real-data experiment has been executed. Begin with `research/selection-transfer/next_experiment.md`, not manuscript drafting.
+The selection-transfer project remains a **research candidate**. Two real-data M5 development studies have been executed and documented; no scientific novelty has been established. Begin with the [operator guide](docs/USER_GUIDE.md), the M5 results and the adversarial reviews, not manuscript drafting.
 
 Mechanical controls:
 
