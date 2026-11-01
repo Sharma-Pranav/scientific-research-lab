@@ -1,24 +1,37 @@
 # Scientific Research Lab — research harness and M5 studies
 
+## Start here — research on any problem
+
+This is a **dataset-independent research workspace**, not an M5-only forecasting project. Use Codex to help design and challenge a study; use the Python harness to execute and audit it. **Start with a falsifiable question, not with a model or a preferred conclusion.**
+
+1. **Frame the question.** State why it matters, what outcome would falsify the hypothesis, and the strongest competing explanation.
+2. **Check existing research.** Use the five Codex research skills to verify primary literature, novelty, methods, baselines, and counterarguments before implementing a solution.
+3. **Choose data deliberately.** **Prefer curated, well-documented research datasets** from trusted sources (for example, official benchmark maintainers, institutional repositories, and dataset archives). Check provenance, version, license/reuse permissions, data dictionary, target labels, quality, and predefined splits. Prefer realistic datasets over convenient but weak ones. Use synthetic data for unit tests and controlled mechanisms, **not** as a substitute for real-world validation. If no credible curated dataset fits, document the trade-off and use a justified alternative; some simulation/theoretical studies need no dataset.
+4. **Scaffold and implement.** Create a project, replace the generated **toy** experiment with domain-specific logic and strong baselines, then freeze a confirmatory protocol only after exploratory decisions are complete.
+5. **Run, verify, challenge.** Execute the study, replay-audit artifacts, investigate failures and negative outcomes, and require an independent scientific review before any publication claim.
+
+```bash
+git clone https://github.com/Sharma-Pranav/scientific-research-lab.git
+cd scientific-research-lab
+python -m unittest discover -s tests -v
+python -m research_lab.study init my-question --title "A falsifiable research question"
+# Edit research/my-question/{proposal.md,protocol.json,experiment.py,evidence_matrix.csv}
+# Replace the scaffolded toy runner before interpreting scientific results.
+python -m research_lab.study run my-question
+python -m research_lab.study audit my-question --replay
+```
+
+**Codex starter prompt:**
+
+> Read `AGENTS.md` and `docs/NEW_RESEARCH_PROJECT.md`. Help investigate **[my research question]** using the five research skills. Check closest prior work and scientific novelty; prefer credible curated datasets with clear provenance, valid reuse rights and appropriate splits; formulate competing falsifiable hypotheses; define strong baselines, uncertainty, and leakage controls; implement a trusted project-specific runner; execute and replay-audit results; conduct an adversarial review. Keep exploratory and confirmatory evidence separate. Report actual tests, sources, limitations, and GO / REVISE / STOP gates. Do not claim novelty or publication readiness without evidence.
+
+**Guides:** [New project tutorial](docs/NEW_RESEARCH_PROJECT.md) · [Full operator guide](docs/USER_GUIDE.md) · [Two-problem cross-domain validation](docs/TWO_PROBLEM_RESULTS.md).
+
 A deliberately small Codex research harness: evidence-gated scientific workflow, isolated Git worktrees, append-only experiment registry, artifact audit and reproducible simulation pilot. **It does not autonomously establish scientific novelty or publication readiness.**
 
 **Start here:** [Detailed operator guide](docs/USER_GUIDE.md) — installation, Codex skills, exact commands, GitHub Actions, interpreting evidence, new research workflows, and troubleshooting.
 
 **Status:** the repository supports repeatable research engineering and real-data exploratory experiments. The M5 studies were executed and verified in GitHub Actions. Scientific novelty and a publication-ready result remain **unproven**.
-
-## Start a new research question (dataset-agnostic)
-
-The repository is **not tied to M5**. M5 is one study adapter; the general-purpose project harness is in `research_lab/study.py`. Each new project provides its own scientific question, protocol, trusted Python experiment, and optional input files. The reusable harness owns project setup, fingerprints, run registry, evidence capture and replay auditing.
-
-~~~bash
-python -m research_lab.study init my-new-question --title "Does the proposed mechanism survive a falsification test?"
-python -m research_lab.study run my-new-question
-python -m research_lab.study audit my-new-question --replay
-~~~
-
-This example executes a **toy data-free simulation** until you replace `research/my-new-question/experiment.py` with an actual domain-specific method. For CSV, images, other inputs or no dataset, declare files in `protocol.json` and implement `run(protocol, inputs)`. The generic harness does not invent scientifically valid methods or claims for new subjects.
-
-**[Full new-project instructions](docs/NEW_RESEARCH_PROJECT.md)** · [Codex operator guide](docs/USER_GUIDE.md)
 
 ## Quick start
 

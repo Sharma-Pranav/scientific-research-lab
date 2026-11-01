@@ -1,5 +1,13 @@
 # Scientific research invariants
 
+## Data selection: default to curated evidence
+
+- **Prefer curated datasets** directly maintained by research institutions, benchmark maintainers, official public agencies, peer-reviewed supplementary archives, or established repositories, when suitable for the actual question. Curated does **not** automatically mean bias-free or suitable for a particular inference.
+- Verify official source and version, documentation/data card, provenance, data dictionary and measurement process, license/reuse rights, known data quality, target construction, label uncertainty, dataset shift, and representative coverage. Check for duplicates, missingness, selection bias and leakage.
+- Preserve source URI, retrieval date, dataset/version ID, file checksum, permissible transformations and split specification in the project protocol/evidence. Prefer predefined benchmark splits when scientifically appropriate, and explicitly reserve held-out data. Never redistribute raw datasets without permission.
+- Prefer credible real-world evidence for externally valid empirical claims. Use synthetic data when the question is theoretical, for controlled falsification, or for test fixtures; clearly identify it as synthetic and do not use it alone to claim field effectiveness.
+- If a curated dataset does not suit the scientific question, do not force it: justify the alternative collection or simulation and document how the limitations affect interpretation. Some research requires no dataset.
+
 - Start every project with **I am studying ... / because I want to find out ... / in order to help readers understand ...**
 - State a falsifiable claim, mechanism, H0, at least one competing explanation, and a meaningful baseline.
 - Separate exploration from confirmation. Freeze protocols before confirmatory data inspection; never rewrite earlier protocols to fit outcomes.
