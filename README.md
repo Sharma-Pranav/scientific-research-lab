@@ -6,6 +6,20 @@ A deliberately small Codex research harness: evidence-gated scientific workflow,
 
 **Status:** the repository supports repeatable research engineering and real-data exploratory experiments. The M5 studies were executed and verified in GitHub Actions. Scientific novelty and a publication-ready result remain **unproven**.
 
+## Start a new research question (dataset-agnostic)
+
+The repository is **not tied to M5**. M5 is one study adapter; the general-purpose project harness is in \`research_lab/study.py\`. Each new project provides its own scientific question, protocol, trusted Python experiment, and optional input files. The reusable harness owns project setup, fingerprints, run registry, evidence capture and replay auditing.
+
+~~~bash
+python -m research_lab.study init my-new-question --title "Does the proposed mechanism survive a falsification test?"
+python -m research_lab.study run my-new-question
+python -m research_lab.study audit my-new-question --replay
+~~~
+
+This example executes a **toy data-free simulation** until you replace \`research/my-new-question/experiment.py\` with an actual domain-specific method. For CSV, images, other inputs or no dataset, declare files in \`protocol.json\` and implement \`run(protocol, inputs)\`. The generic harness does not invent scientifically valid methods or claims for new subjects.
+
+**[Full new-project instructions](docs/NEW_RESEARCH_PROJECT.md)** · [Codex operator guide](docs/USER_GUIDE.md)
+
 ## Quick start
 
 Requires Python >=3.10; runtime has no third-party dependencies. From repository root:

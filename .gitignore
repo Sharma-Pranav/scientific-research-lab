@@ -8,3 +8,7 @@ __pycache__/
 data/
 research-output/
 *.partial
+
+# New project per-run artifacts and local append-only indexes
+runs/projects/
+research/*/experiments.jsonl
