@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "project": "uci-wine-regression",
+  "phase": "exploratory",
+  "frozen": false,
+  "question": "Does a train-fitted alcohol-only linear model improve quality-score predictions over the training-mean baseline?",
+  "significance": "Exercise a scientifically distinct input and evaluation type on an authentic curated UCI dataset.",
+  "hypothesis": "Alcohol-only OLS reduces held-out MAE relative to train-only mean prediction.",
+  "falsifier": "Alcohol-only OLS has no smaller test MAE than the training-mean forecast.",
+  "runner": "experiment.py",
+  "inputs": [
+    {
+      "name": "dataset",
+      "path": "data/curated/winequality-red.csv",
+      "sha256": null
+    }
+  ],
+  "settings": {
+    "task": "quality_regression",
+    "test_ratio": 0.2,
+    "selection": "SHA256 row index",
+    "uci_id": 186
+  },
+  "seeds": [
+    20261101
+  ]
+}

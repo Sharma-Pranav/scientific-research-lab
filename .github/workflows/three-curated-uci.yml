@@ -1,0 +1,94 @@
+name: Three curated UCI datasets — cross-domain real-data validation
+on:
+  push:
+    branches: ['test/three-curated-uci-datasets']
+    paths:
+      - 'research/uci-*/**'
+      - 'research/curated-three-datasets/**'
+      - 'tests/test_uci_three_data.py'
+      - '.github/workflows/three-curated-uci.yml'
+  pull_request:
+    paths:
+      - 'research/uci-*/**'
+      - 'research/curated-three-datasets/**'
+      - 'tests/test_uci_three_data.py'
+      - '.github/workflows/three-curated-uci.yml'
+  workflow_dispatch:
+jobs:
+  real-data-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run repository and data-adapter unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Fetch all three official curated UCI releases (no synthetic substitution)
+        run: python research/curated-three-datasets/acquire.py --root .
+      - name: Run and replay-audit biological classification
+        run: |
+          python -m research_lab.study run uci-iris-classification
+          python -m research_lab.study audit uci-iris-classification --replay
+      - name: Run and replay-audit physicochemical regression
+        run: |
+          python -m research_lab.study run uci-wine-regression
+          python -m research_lab.study audit uci-wine-regression --replay
+      - name: Run and replay-audit demand time-series forecasting
+        run: |
+          python -m research_lab.study run uci-bike-forecasting
+          python -m research_lab.study audit uci-bike-forecasting --replay
+      - name: Independently check source fingerprints, split shapes, outcome bounds
+        run: |
+          python - <<'PY'
+          import json,math,pathlib,hashlib
+          base=pathlib.Path('.')
+          meta=json.loads((base/'data/curated/source_manifest.json').read_text())
+          specs=[
+            ('uci-iris-classification','iris',150,'multiclass_classification'),
+            ('uci-wine-regression','wine_quality_red',1599,'quality_score_regression'),
+            ('uci-bike-forecasting','bike_sharing_daily',731,'chronological_one_step_forecasting')]
+          for slug,key,n,task in specs:
+              reg=(base/'research'/slug/'experiments.jsonl').read_text().splitlines()
+              assert len(reg)==1,slug
+              run_id=json.loads(reg[0])['run_id']
+              result_dir=base/'runs'/'projects'/slug/run_id
+              outcome=json.loads((result_dir/'results.json').read_text())
+              manifest=json.loads((result_dir/'manifest.json').read_text())
+              assert outcome['task']==task and outcome['records']==n
+              assert manifest['inputs']['dataset']['sha256']==meta[key]['file_sha256']
+              assert outcome['train']+outcome['test']==n
+              assert all(math.isfinite(float(m)) and float(m)>=0 for item in outcome['baselines'].values() for m in item.values())
+              print('DATASET_RESULT',slug,json.dumps(outcome,sort_keys=True))
+              print('SOURCE_FINGERPRINT',key,meta[key]['file_sha256'])
+              print('RUN_FINGERPRINT',slug,manifest['protocol_sha256'],manifest['runner_sha256'])
+          iris,wine,bike=specs
+          def results(slug):
+              records=(base/'research'/slug/'experiments.jsonl').read_text().splitlines()
+              identifier=json.loads(records[0])['run_id']
+              return json.loads((base/'runs'/'projects'/slug/identifier/'results.json').read_text())
+          i=results('uci-iris-classification')
+          assert i['baselines']['nearest_centroid']['accuracy'] > i['baselines']['train_majority']['accuracy']
+          w=results('uci-wine-regression')
+          assert w['baselines']['alcohol_only_ols']['mae'] < w['baselines']['train_mean']['mae']
+          b=results('uci-bike-forecasting')
+          assert b['train']==611 and b['test']==120
+          print('ALL_THREE_CURATED_DATASETS_PASS; real UCI data; different split and task types; replay evidence verified')
+          PY
+      - name: Upload derived evidence only — exclude all raw third-party dataset files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: three-curated-uci-realdata-evidence
+          path: |
+            runs/projects/uci-iris-classification/
+            runs/projects/uci-wine-regression/
+            runs/projects/uci-bike-forecasting/
+            research/uci-iris-classification/experiments.jsonl
+            research/uci-wine-regression/experiments.jsonl
+            research/uci-bike-forecasting/experiments.jsonl
+            data/curated/source_manifest.json
+          if-no-files-found: warn
