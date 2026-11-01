@@ -20,6 +20,14 @@
 **Warrant boundary:** exact null, known Gaussian variance and five prespecified looks. No claim about production experimentation platforms, statistical power or novelty.
 **Source:** [two-project simulation results](TWO_PROBLEM_RESULTS.md).
 
+## Verified execution (November 1, 2026)
+
+- [Two-question GitHub Actions run 41324746227](https://github.com/Sharma-Pranav/scientific-research-lab/actions/runs/41324746227): **PASS**, including both worksheet stages, official source checksum, two experiment executions, replay audits, and independent checks that the written numerical evidence matched experiment outcomes.
+- [Full research-harness tests 41324746264](https://github.com/Sharma-Pranav/scientific-research-lab/actions/runs/41324746264): **59/59 passed**.
+- [Derived experiment artifacts](https://github.com/Sharma-Pranav/scientific-research-lab/actions/runs/41324746227/artifacts/13090972212), archive SHA256 `9ad98d38a4957d665943342357836d144832d541ac5b4e5f30978055ac521cc0`. Source UCI data were not uploaded.
+- All five deliberately adversarial/no-evidence structural tests passed. The checker still accepts an arbitrary URL as a syntactically valid evidence locator. This is an **acknowledged gap**, not source verification.
+- Both research questions draw on completed exploratory examples and do not establish new scientific novelty. Human significance, causal interpretation, and publication remain independently reviewed gates.
+
 ## What is tested
 
 Both projects include substantive significance.md worksheets with the three-part reader framing and all five argument sections. The dedicated GitHub Actions workflow:

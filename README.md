@@ -144,3 +144,9 @@ A new integration suite uses the same generic research runner for **checksum-pin
 The dataset-independent research harness has now been exercised on three **real UCI datasets** with distinct research questions and evaluation methods: Iris classification, red Wine Quality regression, and chronological Bike Sharing forecasting. All use the same generic project CLI and replay audits. Source SHA256 fingerprints are pinned; raw data are not committed.
 
 **[See actual metrics, source attribution, negative results and reproduction instructions](docs/THREE_CURATED_DATASETS_RESULTS.md).** These studies demonstrate engineering portability, **not scientific novelty or publication readiness**.
+
+## Tested reader significance on two research questions
+
+The three-step framing and five-part argument checks were independently exercised on **curated UCI Bike Sharing forecasting** and a **dataset-free A/B testing null simulation**. The CI workflow reruns both studies and checks that claims match saved metrics, with deliberately invalid worksheets rejected. These checks verify structure and numerical grounding for the two examples, **not automatic source truth, novelty, or reader importance**.
+
+[See two-question significance validation and exact evidence](docs/TWO_SIGNIFICANCE_QUESTIONS_VALIDATION.md).
