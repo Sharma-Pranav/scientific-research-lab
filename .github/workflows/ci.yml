@@ -10,6 +10,12 @@ jobs:
           python-version: '3.11'
       - name: Infrastructure and methodology tests
         run: python -m unittest discover -s tests -v
+      - name: Dataset-agnostic project scaffolding and audit smoke test
+        run: |
+          LAB=$(mktemp -d)
+          python -m research_lab.study --root "$LAB" init arbitrary-study --title "Can we reproduce this synthetic question?"
+          python -m research_lab.study --root "$LAB" run arbitrary-study
+          python -m research_lab.study --root "$LAB" audit arbitrary-study --replay
       - name: Validate evidence-matrix structure (not factual verification)
         run: |
           python -m research_lab.evidence \

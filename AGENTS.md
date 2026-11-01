@@ -18,3 +18,11 @@
 - Lead-time results need `python -m research_lab.leadtime --verify --config <protocol> --output <run-dir>` plus intact saved artifacts. A frozen field is not external preregistration.
 - For real time-series data, seal the final test period, use horizon-aligned rolling splits with an embargo as necessary, and keep group holdouts separate. Audit feature availability, labels, transforms and model-selection leakage.
 - All internal gates marked GO permit only independent human review, not automatic publication approval.
+
+## Domain-independent research projects
+
+- For new questions, use \`python -m research_lab.study init <slug> --title "..."\` and follow \`docs/NEW_RESEARCH_PROJECT.md\`. Do not copy M5-specific evaluators into unrelated studies.
+- New experiments expose \`run(protocol, inputs)\` in their project-local trusted runner; reusable code must not assume a dataset name, file type, forecasting metric, or domain.
+- Distinguish project scaffolding and infrastructure verification from scientifically valid methods and publication readiness.
+- For confirmation, pin all inputs, freeze exact protocol and runner code, and use a separately protected test set and independent review. A local freeze file is not external preregistration.
+- Never run unreviewed experiment plugins: loading project experiment.py executes arbitrary local Python.
