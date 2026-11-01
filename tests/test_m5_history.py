@@ -9,7 +9,7 @@ from research_lab.leadtime import canonical
 from research_lab.m5_baselines import METHODS
 from research_lab.m5_history import (
     audit, digest, evaluate_origin, matched_daily_cost, matched_daily_errors,
-    past_mean_shift, run, summarize, validate
+    shift_score, run, summarize, validate
 )
 
 BASE={
@@ -55,9 +55,9 @@ class M5HistoryTests(unittest.TestCase):
     def test_past_instability_never_reads_future(self):
         y=[3.]*1100
         y[772:800]=[12.]*28
-        score=past_mean_shift(y,800)
+        score=shift_score(y,800)
         self.assertGreater(score,.5)
-        self.assertEqual(score,past_mean_shift(y[:800]+[500.]*300,800))
+        self.assertEqual(score,shift_score(y[:800]+[500.]*300,800))
 
     def test_matched_loss_count_and_nonleaking_selection(self):
         sample=fake_panel()[0]["y"]
