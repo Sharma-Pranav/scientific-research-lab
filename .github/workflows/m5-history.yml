@@ -1,0 +1,44 @@
+name: M5 history-length falsification (exploratory)
+on:
+  push:
+    branches: ['research/m5-history-length-falsification-v1']
+    paths:
+      - 'research_lab/m5_history.py'
+      - 'research/selection-transfer/history_length_exploratory.json'
+      - 'tests/test_m5_history.py'
+      - '.github/workflows/m5-history.yml'
+  workflow_dispatch:
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Unit tests with no external data
+        run: python -m unittest discover -s tests -p 'test_m5_history.py' -v
+      - name: Download checksum-pinned M5 and execute history-length grid (development only)
+        run: |
+          python -m research_lab.m5_history \
+            --config research/selection-transfer/history_length_exploratory.json \
+            --base-config research/selection-transfer/m5_development.json \
+            --output research-output/history-length \
+            --download
+      - name: Verify every saved regret, summary, protocol and sealed-holdout guard
+        run: |
+          python -m research_lab.m5_history \
+            --config research/selection-transfer/history_length_exploratory.json \
+            --base-config research/selection-transfer/m5_development.json \
+            --output research-output/history-length \
+            --verify
+      - name: Archive *derived* evidence only, never source records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: m5-history-length-evidence
+          path: research-output/history-length/
+          if-no-files-found: warn

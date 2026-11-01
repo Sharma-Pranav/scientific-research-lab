@@ -1,0 +1,54 @@
+{
+  "question_id": "m5-history-length-falsification-v1",
+  "phase": "exploratory",
+  "publication_gate": "STOP",
+  "base_protocol_sha256": "7a38c2b91880e130e1e19b4edcc6e1eabd6161d4e267a459deb5402ac3750b0a",
+  "n_days": 1913,
+  "per_stratum": 8,
+  "dev_states": [
+    "CA",
+    "TX"
+  ],
+  "sealed_state": "WI",
+  "sealed_test_days": 112,
+  "origins": [
+    1365,
+    1421,
+    1477,
+    1533,
+    1589,
+    1645,
+    1701,
+    1757
+  ],
+  "lead_times": [
+    7,
+    14
+  ],
+  "alphas": [
+    0.5,
+    0.9
+  ],
+  "methods": [
+    "seasonal_naive",
+    "mean28",
+    "mean56",
+    "croston_sba"
+  ],
+  "calibration_windows": 12,
+  "selection_windows": 12,
+  "history_lengths": [
+    1,
+    3,
+    6,
+    12
+  ],
+  "regime_definition": "mean-shift-28-vs-prior-56",
+  "regime_threshold": 0.5,
+  "registered_primary_contrast": "policy_12_minus_policy_3_regret",
+  "negative_controls": [
+    "daily_matched_3",
+    "daily_full_12"
+  ],
+  "scope": "M5 development only, Wisconsin group and final 112 days sealed"
+}
